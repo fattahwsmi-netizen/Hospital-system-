@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-lang="key_title">تسجيل المريض - نظام إدارة المركز الطبي</title>
+    <style>
+        :root {
+            --primary-color: #0056b3;
+            --secondary-color: #00d2d3;
+            --success-color: #2ed573;
+            --background-color: #f1f2f6;
+            --text-color: #2f3542;
+            --border-color: #ced6e0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            margin: 10px 0 0;
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 5px rgba(0,86,179,0.2);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        button {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 18px;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: #26af5f;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .required::after {
+            content: " *";
+            color: #ff4757;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1 id="centerName"> المركز الطبي</h1>
+    <p>هاتف: <span id="centerPhone">جارٍ التحميل...</span></p>
+</header>
+
+<div class="container">
+    <h2 data-lang="registration_title">تسجيل بيانات المريض</h2>
+    <form id="patientForm">
+        <div class="form-group">
+            <label for="fullName" class="required" data-lang="full_name">الاسم الكامل:</label>
+            <input type="text" id="fullName" required placeholder="أدخل الاسم الرباعي">
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="phone" class="required" data-lang="phone">رقم الهاتف:</label>
+                <input type="tel" id="phone" required placeholder="01xxxxxxxxx">
+            </div>
+            <div class="form-group">
+                <label for="nationalId" class="required" data-lang="national_id">رقم البطاقة (14 رقم):</label>
+                <input type="text" id="nationalId" maxlength="14" pattern="\d{14}" required placeholder="الرقم القومي">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="dob" data-lang="dob">تاريخ الميلاد:</label>
+                <input type="date" id="dob" readonly>
+            </div>
+            <div class="form-group">
+                <label for="paymentMethod" class="required" data-lang="payment_method">طريقة السداد:</label>
+                <select id="paymentMethod" required>
+                    <option value="" disabled selected data-lang="select_payment">اختر طريقة السداد</option>
+                    <option value="cash" data-lang="cash">كاش</option>
+                    <option value="wallet" data-lang="wallet">محفظة إلكترونية</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label data-lang="address">العنوان:</label>
+            <input type="text" id="address" placeholder="العنوان بالتفصيل">
+        </div>
+
+        <button type="submit" data-lang="submit_btn">حفظ وتسجيل الدخول</button>
+    </form>
+</div>
+
+<script>
+    // قواميس اللغات المدعومة
+    const translations = {
+        ar: {
+            key_title: "تسجيل المريض - نظام إدارة المركز الطبي",
+            registration_title: "تسجيل بيانات المريض",
+            full_name: "الاسم الكامل:",
+            phone: "رقم الهاتف:",
+            national_id: "رقم البطاقة (14 رقم):",
+            dob: "تاريخ الميلاد:",
+            payment_method: "طريقة السداد:",
+            select_payment: "اختر طريقة السداد",
+            cash: "كاش",
+            wallet: "محفظة إلكترونية",
+            address: "العنوان:",
+            submit_btn: "حفظ وتسجيل الدخول",
+            success_msg: "تم حفظ بيانات المريض بنجاح."
+        },
+        en: {
+            key_title: "Patient Registration - Medical Center Management System",
+            registration_title: "Patient Data Registration",
+            full_name: "Full Name:",
+            phone: "Phone Number:",
+            national_id: "National ID (14 digits):",
+            dob: "Date of Birth:",
+            payment_method: "Payment Method:",
+            select_payment: "Select payment method",
+            cash: "Cash",
+            wallet: "E-Wallet",
+            address: "Address:",
+            submit_btn: "Save and Check In",
+            success_msg: "Patient data saved successfully."
+        }
+    };
+
+    // إعدادات المركز العامة (تُدار مركزياً وتدعم تعدد اللغات)
+    const centerConfig = {
+        name: {
+            ar: "مُجمع الشفاء الطبي التخصصي",
+            en: "Al-Shifa Specialized Medical Complex"
+        },
+        phone: "01012345678 - 01287654321",
+        defaultLang: "ar"
+    };
+
+    function setLanguage(lang) {
+        document.documentElement.lang = lang;
+        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        
+        // تحديث النصوص المترجمَة
+        document.querySelectorAll('[data-lang]').forEach(element => {
+            const key = element.getAttribute('data-lang');
+            if (translations[lang][key]) {
+                element.textContent = translations[lang][key];
+            }
+        });
+
+        // تحديث العناصر الديناميكية
+        document.getElementById('centerName').innerText = centerConfig.name[lang];
+        document.getElementById('centerPhone').innerText = centerConfig.phone;
+    }
+
+    // التطبيق المبدئي للغة
+    setLanguage(centerConfig.defaultLang);
+
+    // الاستخراج التلقائي لتاريخ الميلاد
+    document.getElementById('nationalId').addEventListener('input', function() {
+        const id = this.value;
+        if (id.length === 14) {
+            const yearDigit = id.substr(0, 1);
+            const month = id.substr(3, 2);
+            const day = id.substr(5, 2);
+            let year = id.substr(1, 2);
+            
+            if (yearDigit === '2') year = '19' + year;
+            else if (yearDigit === '3') year = '20' + year;
+            else return;
+
+            document.getElementById('dob').value = `${year}-${month}-${day}`;
+        } else {
+            document.getElementById('dob').value = '';
+        }
+    });
+
+    // معالجة الإرسال
+    document.getElementById('patientForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const currentLang = document.documentElement.lang;
+        const patientData = {
+            name: document.getElementById('fullName').value,
+            phone: document.getElementById('phone').value,
+            nationalId: document.getElementById('nationalId').value,
+            dob: document.getElementById('dob').value,
+            paymentMethod: document.getElementById('paymentMethod').value,
+            address: document.getElementById('address').value
+        };
+        console.log("Patient data saved:", patientData);
+        alert(translations[currentLang].success_msg);
+        this.reset();
+        document.getElementById('dob').value = '';
+    });
+</script>
+
+</body>
+  </html>
