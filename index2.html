@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-lang="key_title">إدارة الأطباء والعيادات - نظام إدارة المركز الطبي</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #1abc9c;
+            --success-color: #27ae60;
+            --background-color: #ecf0f1;
+            --text-color: #34495e;
+            --border-color: #bdc3c7;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            margin: 10px 0 0;
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 5px rgba(26,188,156,0.2);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .checkbox-group {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        .checkbox-group label {
+            font-weight: normal;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-group label:last-child {
+            margin-bottom: 0;
+        }
+
+        button {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 18px;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: #219150;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .required::after {
+            content: " *";
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1 id="centerName"> المركز الطبي</h1>
+    <p>هاتف: <span id="centerPhone">جارٍ التحميل...</span></p>
+</header>
+
+<div class="container">
+    <h2 data-lang="doc_title">إضافة طبيب جديد</h2>
+    <form id="doctorForm">
+        <div class="form-group">
+            <label for="docName" class="required" data-lang="doc_name">اسم الطبيب:</label>
+            <input type="text" id="docName" required placeholder="أدخل اسم الطبيب الرباعي">
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="specialty" class="required" data-lang="specialty">التخصص:</label>
+                <input type="text" id="specialty" required placeholder="مثال: جراحة العظام">
+            </div>
+            <div class="form-group">
+                <label for="clinicNumber" class="required" data-lang="clinic_num">رقم العيادة/الغرفة:</label>
+                <input type="text" id="clinicNumber" required placeholder="مثال: عيادة 101">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="paymentModel" class="required" data-lang="payment_model">طريقة المحاسبة:</label>
+            <select id="paymentModel" required>
+                <option value="" disabled selected data-lang="select_model">اختر نظام المحاسبة</option>
+                <option value="percentage" data-lang="model_percentage">نسبة من العمليات/الكشف</option>
+                <option value="rent" data-lang="model_rent">إيجار ثابت للغرفة</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="required" data-lang="associated_packages">الباقات المتاحة للطبيب:</label>
+            <div class="checkbox-group">
+                <label>
+                    <input type="checkbox" name="package" value="pkg_examination">
+                    <span data-lang="pkg_exam">باقة الكشف الشامل</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="package" value="pkg_minor_surgeries">
+                    <span data-lang="pkg_minor">باقة العمليات الصغرى</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="package" value="pkg_major_surgeries">
+                    <span data-lang="pkg_major">باقة العمليات الكبرى والإقامة</span>
+                </label>
+            </div>
+        </div>
+
+        <button type="submit" data-lang="submit_btn">حفظ بيانات الطبيب</button>
+    </form>
+</div>
+
+<script>
+    // قاموس اللغات
+    const translations = {
+        ar: {
+            key_title: "إدارة الأطباء والعيادات - نظام إدارة المركز الطبي",
+            doc_title: "إضافة طبيب جديد",
+            doc_name: "اسم الطبيب:",
+            specialty: "التخصص:",
+            clinic_num: "رقم العيادة/الغرفة:",
+            payment_model: "طريقة المحاسبة:",
+            select_model: "اختر نظام المحاسبة",
+            model_percentage: "نسبة من العمليات/الكشف",
+            model_rent: "إيجار ثابت للغرفة",
+            associated_packages: "الباقات المتاحة للطبيب:",
+            pkg_exam: "باقة الكشف الشامل",
+            pkg_minor: "باقة العمليات الصغرى",
+            pkg_major: "باقة العمليات الكبرى والإقامة",
+            submit_btn: "حفظ بيانات الطبيب",
+            success_msg: "تم حفظ بيانات الطبيب وتخصيص الباقات بنجاح."
+        },
+        en: {
+            key_title: "Doctors and Clinics Management - Medical Center Management System",
+            doc_title: "Add New Doctor",
+            doc_name: "Doctor's Name:",
+            specialty: "Specialty:",
+            clinic_num: "Clinic/Room Number:",
+            payment_model: "Accounting Model:",
+            select_model: "Select accounting model",
+            model_percentage: "Percentage of Surgeries/Consultation",
+            model_rent: "Fixed Room Rent",
+            associated_packages: "Available Packages for Doctor:",
+            pkg_exam: "Comprehensive Examination Package",
+            pkg_minor: "Minor Surgeries Package",
+            pkg_major: "Major Surgeries and Stay Package",
+            submit_btn: "Save Doctor Data",
+            success_msg: "Doctor data and packages assigned successfully."
+        }
+    };
+
+    // إعدادات المركز العامة
+    const centerConfig = {
+        name: {
+            ar: "مُجمع الشفاء الطبي التخصصي",
+            en: "Al-Shifa Specialized Medical Complex"
+        },
+        phone: "01012345678 - 01287654321",
+        defaultLang: "ar"
+    };
+
+    function setLanguage(lang) {
+        document.documentElement.lang = lang;
+        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        
+        document.querySelectorAll('[data-lang]').forEach(element => {
+            const key = element.getAttribute('data-lang');
+            if (translations[lang][key]) {
+                element.textContent = translations[lang][key];
+            }
+        });
+
+        document.getElementById('centerName').innerText = centerConfig.name[lang];
+        document.getElementById('centerPhone').innerText = centerConfig.phone;
+    }
+
+    setLanguage(centerConfig.defaultLang);
+
+    // معالجة الإرسال
+    document.getElementById('doctorForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const currentLang = document.documentElement.lang;
+        
+        // جمع الباقات المحددة
+        const selectedPackages = [];
+        document.querySelectorAll('input[name="package"]:checked').forEach((checkbox) => {
+            selectedPackages.push(checkbox.value);
+        });
+
+        const doctorData = {
+            name: document.getElementById('docName').value,
+            specialty: document.getElementById('specialty').value,
+            clinicNumber: document.getElementById('clinicNumber').value,
+            paymentModel: document.getElementById('paymentModel').value,
+            packages: selectedPackages
+        };
+
+        console.log("Doctor data saved:", doctorData);
+        alert(translations[currentLang].success_msg);
+        this.reset();
+    });
+</script>
+
+</body>
+</html>
