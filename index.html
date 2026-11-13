@@ -1,6 +1,31 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyAJsKX7f5o5o8PBcIKWdzSu_dTBlZuxEJ0",
+    authDomain: "hospital-system-3bc7a.firebaseapp.com",
+    projectId: "hospital-system-3bc7a",
+    storageBucket: "hospital-system-3bc7a.firebasestorage.app",
+    messagingSenderId: "659883515244",
+    appId: "1:659883515244:web:5bcae42cc929c48fb3a749",
+    measurementId: "G-S2ESDP19CR"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+    <script src="auth.js" type="module"></script>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-lang="key_title">تسجيل المريض - نظام إدارة المركز الطبي</title>
