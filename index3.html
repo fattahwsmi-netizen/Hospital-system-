@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-lang="key_title">النظام المالي العام - نظام إدارة المركز الطبي</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #f39c12;
+            --success-color: #27ae60;
+            --danger-color: #c0392b;
+            --background-color: #f4f6f7;
+            --text-color: #34495e;
+            --border-color: #dcdde1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        header p {
+            margin: 10px 0 0;
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 35px;
+        }
+
+        .stat-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            border-right: 5px solid var(--primary-color);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .stat-card.income { border-right-color: var(--success-color); }
+        .stat-card.expense { border-right-color: var(--danger-color); }
+        .stat-card.doctors { border-right-color: var(--secondary-color); }
+
+        .stat-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            color: #7f8c8d;
+        }
+
+        .stat-card p {
+            margin: 0;
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .form-section {
+            margin-bottom: 35px;
+            padding-bottom: 25px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .form-section:last-child {
+            border-bottom: none;
+        }
+
+        h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        button {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 18px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #219150;
+        }
+
+        .required::after {
+            content: " *";
+            color: var(--danger-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            text-align: right;
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #f8f9f9;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1 id="centerName"> المركز الطبي</h1>
+    <p>هاتف: <span id="centerPhone">جارٍ التحميل...</span></p>
+</header>
+
+<div class="container">
+    <h2 data-lang="fin_title">النظام المالي العام والتقارير</h2>
+
+    <!-- لوحة المؤشرات المالية -->
+    <div class="dashboard-grid">
+        <div class="stat-card income">
+            <h3 data-lang="total_income">إجمالي الإيرادات</h3>
+            <p id="totalIncomeDisplay">0 ج.م</p>
+        </div>
+        <div class="stat-card expense">
+            <h3 data-lang="total_expenses">إجمالي المصروفات</h3>
+            <p id="totalExpensesDisplay">0 ج.م</p>
+        </div>
+        <div class="stat-card doctors">
+            <h3 data-lang="docs_dues">مستحقات الأطباء</h3>
+            <p id="totalDoctorsDuesDisplay">0 ج.م</p>
+        </div>
+    </div>
+
+    <!-- تسجيل حركة مالية جديدة -->
+    <div class="form-section">
+        <h3 data-lang="record_trans_title">تسجيل حركة مالية (إيراد/مصروف)</h3>
+        <form id="financialTransactionForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="transType" class="required" data-lang="trans_type">نوع الحركة:</label>
+                    <select id="transType" required>
+                        <option value="" disabled selected data-lang="select_trans_type">اختر نوع الحركة</option>
+                        <option value="income" data-lang="type_income">إيراد (كشف/عملية/كافيتريا)</option>
+                        <option value="expense" data-lang="type_expense">مصروف (رواتب/صيانة/مشتريات)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="transAmount" class="required" data-lang="amount">المبلغ (ج.م):</label>
+                    <input type="number" id="transAmount" min="1" required placeholder="0.00">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="paymentMethod" class="required" data-lang="payment_method">طريقة الدفع/التحصيل:</label>
+                    <select id="paymentMethod" required>
+                        <option value="" disabled selected data-lang="select_payment_method">اختر الطريقة</option>
+                        <option value="cash" data-lang="pay_cash">كاش</option>
+                        <option value="wallet" data-lang="pay_wallet">محفظة إلكترونية</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="transCategory" class="required" data-lang="category">البند/القسم:</label>
+                    <select id="transCategory" required>
+                        <option value="" disabled selected data-lang="select_category">اختر البند</option>
+                        <option value="cat_clinic" data-lang="cat_clinic">عيادات وتكاشف</option>
+                        <option value="cat_surgery" data-lang="cat_surgery">عمليات وإقامة</option>
+                        <option value="cat_cafeteria" data-lang="cat_cafeteria">مبيعات الكافيتريا</option>
+                        <option value="cat_salaries" data-lang="cat_salaries">رواتب وأجور</option>
+                        <option value="cat_supplies" data-lang="cat_supplies">مشتريات ومخزن</option>
+                        <option value="cat_other" data-lang="cat_other">أخرى</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="transNotes" data-lang="notes">بيان/ملاحظات إضافية:</label>
+                <input type="text" id="transNotes" placeholder="مثال: مستحقات د. أحمد / شراء مستلزمات طوارئ">
+            </div>
+
+            <button type="submit" data-lang="btn_save_trans">حفظ الحركة وتحديث السجلات</button>
+        </form>
+    </div>
+
+    <!-- جدول كشف حساب الأطباء -->
+    <div class="form-section">
+        <h3 data-lang="doc_account_title">كشف حساب ومستحقات الأطباء</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th data-lang="table_doc_name">اسم الطبيب</th>
+                    <th data-lang="table_cases_count">عدد الحالات</th>
+                    <th data-lang="table_total_generated">الإجمالي المحقق</th>
+                    <th data-lang="table_dues">المستحق للطبيب</th>
+                    <th data-lang="table_action">إجراء</th>
+                </tr>
+            </thead>
+            <tbody id="doctorsFinancialTableBody">
+                <!-- سيتم التعبئة بواسطة الجافسكريبت -->
+                <tr>
+                    <td colspan="5" style="text-align: center;" data-lang="no_doctors_data">لا توجد بيانات أطباء مسجلة حالياً.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const translations = {
+        ar: {
+            key_title: "النظام المالي العام - نظام إدارة المركز الطبي",
+            fin_title: "النظام المالي العام والتقارير",
+            total_income: "إجمالي الإيرادات",
+            total_expenses: "إجمالي المصروفات",
+            docs_dues: "مستحقات الأطباء",
+            record_trans_title: "تسجيل حركة مالية (إيراد/مصروف)",
+            trans_type: "نوع الحركة:",
+            select_trans_type: "اختر نوع الحركة",
+            type_income: "إيراد (كشف/عملية/كافيتريا)",
+            type_expense: "مصروف (رواتب/صيانة/مشتريات)",
+            amount: "المبلغ (ج.م):",
+            payment_method: "طريقة الدفع/التحصيل:",
+            select_payment_method: "اختر الطريقة",
+            pay_cash: "كاش",
+            pay_wallet: "محفظة إلكترونية",
+            category: "البند/القسم:",
+            select_category: "اختر البند",
+            cat_clinic: "عيادات وتكاشف",
+            cat_surgery: "عمليات وإقامة",
+            cat_cafeteria: "مبيعات الكافيتريا",
+            cat_salaries: "رواتب وأجور",
+            cat_supplies: "مشتريات ومخزن",
+            cat_other: "أخرى",
+            notes: "بيان/ملاحظات إضافية:",
+            btn_save_trans: "حفظ الحركة وتحديث السجلات",
+            doc_account_title: "كشف حساب ومستحقات الأطباء",
+            table_doc_name: "اسم الطبيب",
+            table_cases_count: "عدد الحالات",
+            table_total_generated: "الإجمالي المحقق",
+            table_dues: "المستحق للطبيب",
+            table_action: "إجراء",
+            no_doctors_data: "لا توجد بيانات أطباء مسجلة حالياً.",
+            trans_success: "تم تسجيل الحركة المالية وتحديث المؤشرات بنجاح.",
+            settle_success: "تمت تسوية وصرف مستحقات الطبيب بنجاح."
+        },
+        en: {
+            key_title: "General Financial System - Medical Center Management System",
+            fin_title: "General Financial System & Reports",
+            total_income: "Total Income",
+            total_expenses: "Total Expenses",
+            docs_dues: "Doctors' Dues",
+            record_trans_title: "Record Financial Transaction (Income/Expense)",
+            trans_type: "Transaction Type:",
+            select_trans_type: "Select transaction type",
+            type_income: "Income (Consultation/Surgery/Cafeteria)",
+            type_expense: "Expense (Salaries/Maintenance/Purchases)",
+            amount: "Amount (EGP):",
+            payment_method: "Payment Method:",
+            select_payment_method: "Select method",
+            pay_cash: "Cash",
+            pay_wallet: "E-Wallet",
+            category: "Category/Department:",
+            select_category: "Select category",
+            cat_clinic: "Clinics & Consultations",
+            cat_surgery: "Surgeries & Inpatient",
+            cat_cafeteria: "Cafeteria Sales",
+            cat_salaries: "Salaries & Wages",
+            cat_supplies: "Purchases & Inventory",
+            cat_other: "Other",
+            notes: "Description/Notes:",
+            btn_save_trans: "Save Transaction & Update Records",
+            doc_account_title: "Doctors' Account Statement & Dues",
+            table_doc_name: "Doctor's Name",
+            table_cases_count: "Cases Count",
+            table_total_generated: "Total Generated",
+            table_dues: "Doctor's Dues",
+            table_action: "Action",
+            no_doctors_data: "No doctor data registered currently.",
+            trans_success: "Financial transaction recorded and indicators updated successfully.",
+            settle_success: "Doctor's dues settled and paid successfully."
+        }
+    };
+
+    const centerConfig = {
+        name: {
+            ar: "مُجمع الشفاء الطبي التخصصي",
+            en: "Al-Shifa Specialized Medical Complex"
+        },
+        phone: "01012345678 - 01287654321",
+        defaultLang: "ar"
+    };
+
+    // بيانات مالية وهمية
+    let financialState = {
+        totalIncome: 155000,
+        totalExpenses: 45000
+    };
+
+    // بيانات أطباء وهمية للمحاكاة
+    const doctorsDB = [
+        { id: 'doc_1', name: 'د. أحمد محمود', casesCount: 14, totalGenerated: 28000, duesRate: 0.6 }, // 60% نسبة
+        { id: 'doc_2', name: 'د. سارة إبراهيم', casesCount: 8, totalGenerated: 40000, duesRate: 0.7 },
+        { id: 'doc_3', name: 'د. خالد عبد الله', casesCount: 5, totalGenerated: 15000, paymentModel: 'rent' } // إيجار
+    ];
+
+    function setLanguage(lang) {
+        document.documentElement.lang = lang;
+        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        
+        document.querySelectorAll('[data-lang]').forEach(element => {
+            const key = element.getAttribute('data-lang');
+            if (translations[lang][key]) {
+                element.textContent = translations[lang][key];
+            }
+        });
+
+        document.getElementById('centerName').innerText = centerConfig.name[lang];
+        document.getElementById('centerPhone').innerText = centerConfig.phone;
+        
+        updateFinancialDisplay();
+        renderDoctorsTable();
+    }
+
+    function updateFinancialDisplay() {
+        const lang = document.documentElement.lang;
+        const currencySuffix = lang === 'ar' ? ' ج.م' : ' EGP';
+        
+        document.getElementById('totalIncomeDisplay').textContent = financialState.totalIncome.toLocaleString() + currencySuffix;
+        document.getElementById('totalExpensesDisplay').textContent = financialState.totalExpenses.toLocaleString() + currencySuffix;
+        
+        // حساب مستحقات الأطباء الإجمالية
+        const totalDocsDues = doctorsDB.reduce((acc, doc) => {
+            if (doc.paymentModel === 'rent') {
+                return acc + 0; // نظام إيجار للغرفة لا يظهر كمستحقة متغيرة هنا
+            }
+            return acc + (doc.totalGenerated * doc.duesRate);
+        }, 0);
+
+        document.getElementById('totalDoctorsDuesDisplay').textContent = Math.round(totalDocsDues).toLocaleString() + currencySuffix;
+    }
+
+    function renderDoctorsTable() {
+        const tbody = document.getElementById('doctorsFinancialTableBody');
+        const lang = document.documentElement.lang;
+        const currencySuffix = lang === 'ar' ? ' ج.م' : ' EGP';
+        const settleBtnText = lang === 'ar' ? 'صرف المستحقات' : 'Settle Dues';
+        const rentText = lang === 'ar' ? 'نظام إيجار (لا يوجد نسبة)' : 'Rent Model (No percentage)';
+
+        tbody.innerHTML = '';
+
+        if (doctorsDB.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align: center;">${translations[lang].no_doctors_data}</td></tr>`;
+            return;
+        }
+
+        doctorsDB.forEach(doc => {
+            const tr = document.createElement('tr');
+            let duesAmountText = '';
+            
+            if (doc.paymentModel === 'rent') {
+                duesAmountText = `<span style="color: #95a5a6;">${rentText}</span>`;
+            } else {
+                const calculatedDues = Math.round(doc.totalGenerated * doc.duesRate);
+                duesAmountText = `<strong>${calculatedDues.toLocaleString()}${currencySuffix}</strong>`;
+            }
+
+            tr.innerHTML = `
+                <td>${doc.name}</td>
+                <td>${doc.casesCount}</td>
+                <td>${doc.totalGenerated.toLocaleString()}${currencySuffix}</td>
+                <td>${duesAmountText}</td>
+                <td>
+                    ${doc.paymentModel !== 'rent' ? `<button onclick="settleDoctorDues('${doc.id}')" style="padding: 6px 12px; font-size: 14px; background-color: var(--secondary-color);">${settleBtnText}</button>` : '-'}
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    // محاكاة تسديد مستحقات الطبيب
+    window.settleDoctorDues = function(doctorId) {
+        const lang = document.documentElement.lang;
+        const doc = doctorsDB.find(d => d.id === doctorId);
+        if (doc && doc.paymentModel !== 'rent') {
+            const dues = Math.round(doc.totalGenerated * doc.duesRate);
+            // تحويل المستحقات إلى مصروف
+            financialState.totalExpenses += dues;
+            // تصفير الإجمالي المحقق للمحاكاة
+            doc.totalGenerated = 0;
+            doc.casesCount = 0;
+            
+            alert(translations[lang].settle_success);
+            updateFinancialDisplay();
+            renderDoctorsTable();
+        }
+    };
+
+    // معالجة تسجيل حركة مالية
+    document.getElementById('financialTransactionForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const lang = document.documentElement.lang;
+        const type = document.getElementById('transType').value;
+        const amount = parseFloat(document.getElementById('transAmount').value);
+
+        if (type === 'income') {
+            financialState.totalIncome += amount;
+        } else if (type === 'expense') {
+            financialState.totalExpenses += amount;
+        }
+
+        console.log("Transaction recorded. New State:", financialState);
+        alert(translations[lang].trans_success);
+        
+        this.reset();
+        updateFinancialDisplay();
+    });
+
+    setLanguage(centerConfig.defaultLang);
+</script>
+
+</body>
+</html>
+``````html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-lang="key_title">النظام المالي العام - نظام إدارة المركز الطبي</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #f39c12;
+            --success-color: #27ae60;
+            --danger-color: #c0392b;
+            --background-color: #f4f6f7;
+            --text-color: #34495e;
+            --border-color: #dcdde1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        header p {
+            margin: 10px 0 0;
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+        }
+
+        .dashboard-grid {
+            display: grid;
